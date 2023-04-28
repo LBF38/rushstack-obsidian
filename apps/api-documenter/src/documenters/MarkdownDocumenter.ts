@@ -1246,6 +1246,7 @@ export class MarkdownDocumenter {
           baseName = Utilities.getSafeFilenameForName(PackageName.getUnscopedName(hierarchyItem.displayName));
           break;
         default:
+          baseName += '.' + qualifiedName;
       }
     }
     return baseName + '.md';
