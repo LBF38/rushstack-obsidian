@@ -1255,7 +1255,6 @@ export class MarkdownDocumenter {
   }
 
   private _getLinkFilenameForApiItem(apiItem: ApiItem): string {
-    return './' + this._getFilenameForApiItem(apiItem);
     return this._getFilenameForApiItem(apiItem);
   }
 
