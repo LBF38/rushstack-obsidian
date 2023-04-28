@@ -1128,6 +1128,8 @@ export class MarkdownDocumenter {
     );
 
     for (const hierarchyItem of apiItem.getHierarchy()) {
+      if (hierarchyItem.displayName === 'obsidian') continue;
+
       switch (hierarchyItem.kind) {
         case ApiItemKind.Model:
         case ApiItemKind.EntryPoint:
@@ -1254,6 +1256,7 @@ export class MarkdownDocumenter {
 
   private _getLinkFilenameForApiItem(apiItem: ApiItem): string {
     return './' + this._getFilenameForApiItem(apiItem);
+    return this._getFilenameForApiItem(apiItem);
   }
 
   private _deleteOldOutputFiles(): void {
