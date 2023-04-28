@@ -86,3 +86,10 @@ lib-shim
 dist
 *.scss.ts
 *.sass.ts
+
+.cache
+yarn.lock
+package-lock.json
+*.md
+build-tests/
+*.d.ts

@@ -1139,7 +1139,7 @@ export class MarkdownDocumenter {
           output.appendNodesInParagraph([
             new DocPlainText({
               configuration,
-              text: ' > '
+              text: ' › '
             }),
             new DocLinkTag({
               configuration,
@@ -1228,7 +1228,6 @@ export class MarkdownDocumenter {
     let baseName: string = '';
     for (const hierarchyItem of apiItem.getHierarchy()) {
       // For overloaded methods, add a suffix such as "MyClass.myMethod_2".
-      let qualifiedName: string = Utilities.getSafeFilenameForName(hierarchyItem.displayName);
       if (ApiParameterListMixin.isBaseClassOf(hierarchyItem)) {
         if (hierarchyItem.overloadIndex > 1) {
           // Subtract one for compatibility with earlier releases of API Documenter.
@@ -1246,7 +1245,6 @@ export class MarkdownDocumenter {
           baseName = Utilities.getSafeFilenameForName(PackageName.getUnscopedName(hierarchyItem.displayName));
           break;
         default:
-          baseName += '.' + qualifiedName;
       }
     }
     return baseName + '.md';
