@@ -1116,7 +1116,7 @@ export class MarkdownDocumenter {
   private _writeBreadcrumb(output: DocSection, apiItem: ApiItem): void {
     const configuration: TSDocConfiguration = this._tsdocConfiguration;
 
-    for (const hierarchyItem of apiItem.getHierarchy()) {
+    for (const [index, hierarchyItem] of apiItem.getHierarchy().entries()) {
       if (hierarchyItem.displayName === 'obsidian') continue;
 
       switch (hierarchyItem.kind) {
@@ -1127,18 +1127,24 @@ export class MarkdownDocumenter {
           // this may change in the future.
           break;
         default:
-          output.appendNodesInParagraph([
-            new DocPlainText({
-              configuration,
-              text: ' › '
-            }),
+          // skip index and obsidian
+          if (index > 3) {
+            output.appendNodeInParagraph(
+              new DocPlainText({
+                configuration,
+                text: ' › '
+              })
+            );
+          }
+
+          output.appendNodeInParagraph(
             new DocLinkTag({
               configuration,
               tagName: '@link',
               linkText: '`' + hierarchyItem.displayName + '`',
               urlDestination: this._getLinkFilenameForApiItem(hierarchyItem)
             })
-          ]);
+          );
       }
     }
   }
