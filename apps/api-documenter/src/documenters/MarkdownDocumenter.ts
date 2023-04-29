@@ -878,9 +878,7 @@ export class MarkdownDocumenter {
       parametersTable.addRow(
         new DocTableRow({ configuration }, [
           new DocTableCell({ configuration }, [
-            new DocParagraph({ configuration }, [
-              new DocPlainText({ configuration, text: apiParameter.name })
-            ])
+            new DocParagraph({ configuration }, [new DocCodeSpan({ configuration, code: apiParameter.name })])
           ]),
           new DocTableCell({ configuration }, [
             this._createParagraphForTypeExcerpt(apiParameter.parameterTypeExcerpt)
@@ -921,7 +919,7 @@ export class MarkdownDocumenter {
     const paragraph: DocParagraph = new DocParagraph({ configuration });
 
     if (!excerpt.text.trim()) {
-      paragraph.appendNode(new DocPlainText({ configuration, text: '(not declared)' }));
+      paragraph.appendNode(new DocCodeSpan({ configuration, code: '(not declared)' }));
     } else {
       this._appendExcerptWithHyperlinks(paragraph, excerpt);
     }
@@ -955,7 +953,7 @@ export class MarkdownDocumenter {
           new DocLinkTag({
             configuration,
             tagName: '@link',
-            linkText: unwrappedTokenText,
+            linkText: '`' + unwrappedTokenText + '`',
             urlDestination: this._getLinkFilenameForApiItem(apiItemResult.resolvedApiItem)
           })
         );
@@ -964,7 +962,7 @@ export class MarkdownDocumenter {
     }
 
     // Otherwise append non-hyperlinked text
-    docNodeContainer.appendNode(new DocPlainText({ configuration, text: unwrappedTokenText }));
+    docNodeContainer.appendNode(new DocCodeSpan({ configuration, code: unwrappedTokenText }));
   }
 
   private _createTitleCell(apiItem: ApiItem): DocTableCell {
@@ -980,7 +978,7 @@ export class MarkdownDocumenter {
         new DocLinkTag({
           configuration,
           tagName: '@link',
-          linkText: linkText,
+          linkText: '`' + linkText + '`',
           urlDestination: this._getLinkFilenameForApiItem(apiItem)
         })
       ])
@@ -1032,7 +1030,7 @@ export class MarkdownDocumenter {
           new DocLinkTag({
             configuration,
             tagName: '@link',
-            linkText: apiItem.parent.displayName,
+            linkText: '`' + apiItem.parent.displayName + '`',
             urlDestination: this._getLinkFilenameForApiItem(apiItem.parent)
           }),
           new DocPlainText({ configuration, text: ')' })
@@ -1122,7 +1120,7 @@ export class MarkdownDocumenter {
       new DocLinkTag({
         configuration,
         tagName: '@link',
-        linkText: 'Home',
+        linkText: 'Index',
         urlDestination: this._getLinkFilenameForApiItem(this._apiModel)
       })
     );
@@ -1146,7 +1144,7 @@ export class MarkdownDocumenter {
             new DocLinkTag({
               configuration,
               tagName: '@link',
-              linkText: hierarchyItem.displayName,
+              linkText: '`' + hierarchyItem.displayName + '`',
               urlDestination: this._getLinkFilenameForApiItem(hierarchyItem)
             })
           ]);
