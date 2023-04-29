@@ -1116,15 +1116,6 @@ export class MarkdownDocumenter {
   private _writeBreadcrumb(output: DocSection, apiItem: ApiItem): void {
     const configuration: TSDocConfiguration = this._tsdocConfiguration;
 
-    output.appendNodeInParagraph(
-      new DocLinkTag({
-        configuration,
-        tagName: '@link',
-        linkText: 'Index',
-        urlDestination: this._getLinkFilenameForApiItem(this._apiModel)
-      })
-    );
-
     for (const hierarchyItem of apiItem.getHierarchy()) {
       if (hierarchyItem.displayName === 'obsidian') continue;
 
