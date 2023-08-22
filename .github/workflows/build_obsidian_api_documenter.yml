@@ -1,9 +1,15 @@
-name: Build TypeScript docs
+name: Build Obsidian api-documenter
 
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - 'api-documenter/**' # Only run this workflow whenever a file in ./api-documenter has changed.
+
+permissions:
+  contents: write # For GH Release
 
 jobs:
   build:
@@ -39,3 +45,5 @@ jobs:
           git commit -m "chore(release): :tag: update Obsidian API Documenter fork"
           git push origin main
           gh release create -t "Obsidian API Documenter fork (binary)" -n "Obsidian API Documenter fork binary.\nThis is used to generate the TypeScript API inside the [Obsidian Developers Documentation](https://docs.obsidian.md)" "/apps/api-documenter/bin/api-documenter#api-documenter"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
