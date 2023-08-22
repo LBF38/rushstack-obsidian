@@ -33,17 +33,36 @@ jobs:
           rush update --bypass-policy
           rush build
 
-      - name: Configure Git user
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit and Release Obsidian API Documenter fork
+      - name: Get package version - API Documenter
         working-directory: ./apps/api-documenter
+        id: get_version
+        run: echo "::set-output name=version::$(jq -r '.version' package.json)"
+
+      - name: Commit and Create Git tag
+        id: create_tag
         run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add
-          git commit -a -m "chore(release): :tag: update Obsidian API Documenter fork"
+          git commmit -a -m "chore(release): :bookmark: v${{steps.get_version.outputs.version }}-${{ github.run_number }}
+
+          update Obsidian API Documenter fork"
+          git tag -a v${{ steps.get_version.outputs.version }}-${{ github.run_number }} -m "Release v${{ steps.get_version.outputs.version }}-${{ github.run_number }}"
+          git push origin v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
           git push origin main
-          gh release create -t "Obsidian API Documenter fork (binary)" -n "Obsidian API Documenter fork binary.\nThis is used to generate the TypeScript API inside the [Obsidian Developers Documentation](https://docs.obsidian.md)" "/apps/api-documenter/bin/api-documenter#api-documenter"
+          echo "::set-output name=tag::v${{ steps.get_version.outputs.version }}-${{ github.run_number }}"
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Release v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
+          tag_name: ${{ steps.create_tag.outputs.tag }}
+          body: |
+            Release v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
+            Obsidian API Documenter fork binary. This is used to generate the TypeScript API inside the [Obsidian Developers Documentation](https://docs.obsidian.md).
+          draft: false
+          prerelease: false
+          files: app/api-documenter/bin/api-documenter
