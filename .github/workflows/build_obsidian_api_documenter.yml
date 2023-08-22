@@ -1,0 +1,41 @@
+name: Build TypeScript docs
+
+on:
+  push:
+    paths:
+      - 'api-documenter/**' # Only run this workflow whenever a file in ./api-documenter has changed.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code, API Documenter fork
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+
+      - name: Install Rush
+        run: npm install -g @microsoft/rush
+
+      - name: Build Rushstack
+        continue-on-error: true
+        run: |
+          rush update --bypass-policy
+          rush build
+
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and Release Obsidian API Documenter fork
+        working-directory: ./apps/api-documenter
+        run: |
+          git add .
+          git commit -m "chore(release): :tag: update Obsidian API Documenter fork"
+          git push origin main
+          gh release create -t "Obsidian API Documenter fork (binary)" -n "Obsidian API Documenter fork binary.\nThis is used to generate the TypeScript API inside the [Obsidian Developers Documentation](https://docs.obsidian.md)" "/apps/api-documenter/bin/api-documenter#api-documenter"
