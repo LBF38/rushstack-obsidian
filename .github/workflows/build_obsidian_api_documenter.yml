@@ -43,8 +43,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add
-          git commmit -a -m "chore(release): :bookmark: v${{steps.get_version.outputs.version }}-${{ github.run_number }}
+          git commit -a -m "chore(release): :bookmark: v${{steps.get_version.outputs.version }}-${{ github.run_number }}
 
           update Obsidian API Documenter fork"
           git tag -a v${{ steps.get_version.outputs.version }}-${{ github.run_number }} -m "Release v${{ steps.get_version.outputs.version }}-${{ github.run_number }}"
