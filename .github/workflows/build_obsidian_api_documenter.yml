@@ -36,7 +36,7 @@ jobs:
       - name: Get package version - API Documenter
         working-directory: ./apps/api-documenter
         id: get_version
-        run: echo "::set-output name=version::$(jq -r '.version' package.json)"
+        run: echo "version=$(jq -r '.version' package.json)" >> $GITHUB_OUTPUT
 
       - name: Commit and Create Git tag
         id: create_tag
@@ -49,11 +49,10 @@ jobs:
           git tag -a v${{ steps.get_version.outputs.version }}-${{ github.run_number }} -m "Release v${{ steps.get_version.outputs.version }}-${{ github.run_number }}"
           git push origin v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
           git push origin main
-          echo "::set-output name=tag::v${{ steps.get_version.outputs.version }}-${{ github.run_number }}"
+          echo "tag=v${{ steps.get_version.outputs.version }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -64,4 +63,4 @@ jobs:
             Obsidian API Documenter fork binary. This is used to generate the TypeScript API inside the [Obsidian Developers Documentation](https://docs.obsidian.md).
           draft: false
           prerelease: false
-          files: app/api-documenter/bin/api-documenter
+          files: ./apps/api-documenter/bin/api-documenter
